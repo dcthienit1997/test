@@ -1,0 +1,9 @@
+{
+  "generator-jhipster-bbx-blueprint:0.0.1": {
+    "promptValues": {
+      "selectedApiPublishMethods": ["rest"],
+      "databaseType": "mongodb",
+      "selectedMessageBrokers": ["kafka"]
+    }
+  }
+}

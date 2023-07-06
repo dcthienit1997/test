@@ -1,0 +1,38 @@
+{
+  "generator-jhipster": {
+    "applicationName": "Sample",
+    "applicationType": "monolith",
+    "artifactId": "sample",
+    "baseName": "sample",
+    "blueprints": [
+      {
+        "name": "generator-jhipster-bbx-blueprint",
+        "version": "0.0.1"
+      }
+    ],
+    "databaseType": "mongodb",
+    "devDatabaseType": "mongodb",
+    "enableCICD": true,
+    "enableContractFirst": true,
+    "enableFeatureManagement": true,
+    "enableHibernateCache": false,
+    "enableLiquibase": true,
+    "enableOAuth2Client": true,
+    "enableRestClient": true,
+    "otherModules": [
+      {
+        "name": "generator-jhipster-bbx-blueprint",
+        "version": "0.0.1"
+      }
+    ],
+    "packageFolder": "com/sbc/bbx",
+    "packageName": "com.sbc.bbx",
+    "prodDatabaseType": "mongodb",
+    "reactive": true,
+    "repositoryName": "SampleRepository",
+    "selectedApiPublishMethods": ["rest"],
+    "selectedMessageBrokers": ["kafka"],
+    "serviceName": "sample",
+    "titleApplicationName": "Sample"
+  }
+}

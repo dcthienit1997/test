@@ -1,0 +1,117 @@
+# Common in Spring Boot
+spring.application.name: Sample
+server:
+  shutdown: graceful
+  forward-headers-strategy: framework
+  compression:
+    enabled: true
+    # Compress the response only if the response size is at least 2KB
+    min-response-size: 2048B
+    mime-types: application/json
+spring.lifecycle.timeout-per-shutdown-phase: 10s
+
+# OpenAPI V3
+springdoc:
+  swagger-ui.path: /openapi/swagger-ui.html
+  api-docs.path: /openapi/v3/api-docs
+  packagesToScan: com.sbc.bbx.sample.controllers
+  pathsToMatch: /**
+  cache.disabled: true
+
+# Cloud Stream
+spring.cloud.function.definition: sampleConsumer
+spring.cloud.stream:
+  bindings:
+    samples-out-0:
+      destination: samples
+      contentType: application/json
+      producer:
+        partition-key-expression: headers['partitionKey']
+      binder: kafka
+    sampleConsumer-in-0:
+      destination: samples
+      group: samplesGroup
+      contentType: application/json
+      consumer:
+        maxAttempts: 3
+        backOffInitialInterval: 500
+        backOffMaxInterval: 1000
+        backOffMultiplier: 2.0
+      binder: kafka
+  binders:
+    kafka:
+      type: kafka
+      environment:
+        spring.cloud.stream.kafka:
+          binder:
+            brokers: ${KAFKA_BROKER:localhost}
+            defaultBrokerPort: ${KAFKA_BROKER_PORT:29092}
+            autoAddPartitions: true
+            replication-factor: 1
+          bindings.sampleConsumer-in-0.consumer.enableDlq: true
+
+# Database
+# MongoDb
+spring.data.mongodb:
+  host: ${MONGODB_HOST:localhost}
+  port: ${MONGODB_PORT:27017}
+  database: sample-db
+
+# Database Migration
+spring.liquibase:
+  enabled: true
+  change-log: classpath:db/changelog/db.changelog-root.xml
+  url: mongodb://${MONGODB_HOST:localhost}:${MONGODB_PORT:27017}/sample-db?retryWrites=true&connectTimeoutMS=10000
+
+# OAuth2 Client
+spring.security.oauth2:
+  client:
+    registration:
+      mywebclient:
+        client-id: myclient
+        client-secret: sample-secret
+        authorization-grant-type: client_credentials
+    provider:
+      mywebclient:
+        issuer-uri: http://localhost:8090/realms/myrealm
+        token-uri: http://localhost:8090/realms/myrealm/protocol/openid-connect/token
+
+# Feature Management
+launchdarkly:
+  sdkKey: ${LAUNCHDARKLY_SDKKEY}
+
+# Logging
+logging:
+  level:
+    root: ERROR
+    com.sbc.bbx: DEBUG
+    org.springframework.web.server.adapter.HttpWebHandlerAdapter: TRACE
+    org.springframework.data.mongodb.core.ReactiveMongoTemplate: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
+# Resilience4j
+management.health.circuitbreakers.enabled: true
+resilience4j.retry:
+  instances:
+    backendA:
+      maxAttempts: 3
+      waitDuration: 1000
+      retryExceptions:
+        - org.springframework.web.client.HttpServerErrorException
+resilience4j.circuitbreaker:
+  instances:
+    backendA:
+      allowHealthIndicatorToFail: false
+      registerHealthIndicator: true
+      slidingWindowType: COUNT_BASED
+      slidingWindowSize: 5
+      failureRateThreshold: 50
+      waitDurationInOpenState: 10000
+      permittedNumberOfCallsInHalfOpenState: 3
+      automaticTransitionFromOpenToHalfOpenEnabled: true
+      recordExceptions:
+        - org.springframework.web.client.HttpServerErrorException
+      ignoreExceptions:
+        - com.sbc.bbx.sample.exceptions.InvalidInputException
+        - com.sbc.bbx.sample.exceptions.NotFoundException

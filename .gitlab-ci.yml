@@ -1,0 +1,4 @@
+include:
+  - project: securitybankph/shared/bbx/devops/gitlab-ci/shared-gitlab-blueprints/java-ms-blueprint
+    ref: tags/v1.0.0
+    file: blueprint-template.yml

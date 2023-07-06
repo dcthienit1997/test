@@ -1,0 +1,99 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+  - url: http://localhost:8080
+    description: Generated server url
+paths:
+  /api/samples/{id}:
+    get:
+      tags:
+        - Sample
+      operationId: getSample
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: OK
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/Sample"
+    put:
+      tags:
+        - Sample
+      operationId: updateSample
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Sample"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/Sample"
+    delete:
+      tags:
+        - Sample
+      operationId: deleteSample
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        "204":
+          description: No Content
+  /api/samples:
+    post:
+      tags:
+        - Sample
+      operationId: createSample
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Sample"
+        required: true
+      responses:
+        "201":
+          description: Created
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/Sample"
+components:
+  schemas:
+    Sample:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        sampleId:
+          type: integer
+          format: int32
+        name:
+          type: string
+        weight:
+          type: integer
+          format: int32
